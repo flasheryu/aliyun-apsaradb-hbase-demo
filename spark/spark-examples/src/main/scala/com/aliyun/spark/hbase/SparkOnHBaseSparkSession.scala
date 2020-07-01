@@ -1,16 +1,17 @@
 package com.aliyun.spark.hbase
 
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions._
 
 object SparkOnHBaseSparkSession {
   def main(args: Array[String]): Unit = {
     //HBase集群的ZK链接地址。//HBase集群的ZK链接地址。使用时请把此路径替换为你自己的HBase集群的zk访问地址。
     //格式为：xxx-002.hbase.rds.aliyuncs.com:2181,xxx-001.hbase.rds.aliyuncs.com:2181,xxx-003.hbase.rds.aliyuncs.com:2181
-    val zkAddress = args(0)
+    val zkAddress = "hb-uf605afn87tr34rm3-master1-001.hbase.rds.aliyuncs.com:2181,hb-uf605afn87tr34rm3-master2-001.hbase.rds.aliyuncs.com:2181,hb-uf605afn87tr34rm3-master3-001.hbase.rds.aliyuncs.com:2181"
     //hbase侧的表名，需要在hbase侧提前创建。hbase表创建可以参考：https://help.aliyun.com/document_detail/52051.html?spm=a2c4g.11174283.6.577.7e943c2eiYCq4k
-    val hbaseTableName = args(1)
+    val hbaseTableName = "ele"
     //Spark侧的表名。
-    val sparkTableName = args(2)
+    val sparkTableName = "spark_on_hbase_ele_1"
 
     val sparkSession = SparkSession
       .builder()
@@ -45,7 +46,13 @@ object SparkOnHBaseSparkSession {
     println(s" the create sql cmd is: \n $createCmd")
     sparkSession.sql(createCmd)
     val querySql = "select * from " + sparkTableName + " limit 10"
-    sparkSession.sql(querySql).show
+    var df = sparkSession.sql(querySql)
+
+    val soupDf = df.select("*").where(col("skutype").contains("汤"))
+    soupDf.show
+    val riceFilter = col("skuname").contains("饭") and not(col("skuname").contains("不含米饭"))
+    val riceDf = df.filter(riceFilter)
+    riceDf.show
     sparkSession.stop()
   }
 }

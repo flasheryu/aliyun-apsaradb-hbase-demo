@@ -34,7 +34,7 @@ object HBaseCompositeRecord {
   }
 }
 
-object CompositeKey {
+object ShcExample {
   def cat = s"""{
                |"table":{"namespace":"default", "name":"shcExampleTable_1", "tableCoder":"PrimitiveType"},
                |"rowkey":"key1:key2",

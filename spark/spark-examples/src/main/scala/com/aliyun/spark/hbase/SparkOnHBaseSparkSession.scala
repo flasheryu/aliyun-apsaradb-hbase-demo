@@ -21,12 +21,24 @@ object SparkOnHBaseSparkSession {
     //如果存在的话就删除表
     sparkSession.sql(s"drop table if exists $sparkTableName")
 
+//    val createCmd = s"""CREATE TABLE ${sparkTableName} USING org.apache.hadoop.hbase.spark
+//                       |    OPTIONS ('catalog'=
+//                       |    '{"table":{"namespace":"default", "name":"${hbaseTableName}"},"rowkey":"rowkey",
+//                       |    "columns":{
+//                       |    "col0":{"cf":"rowkey", "col":"rowkey", "type":"string"},
+//                       |    "col1":{"cf":"cf", "col":"col1", "type":"String"}}}',
+//                       |    'hbase.zookeeper.quorum' = '${zkAddress}'
+//                       |    )""".stripMargin
+//
     val createCmd = s"""CREATE TABLE ${sparkTableName} USING org.apache.hadoop.hbase.spark
                        |    OPTIONS ('catalog'=
                        |    '{"table":{"namespace":"default", "name":"${hbaseTableName}"},"rowkey":"rowkey",
                        |    "columns":{
-                       |    "col0":{"cf":"rowkey", "col":"rowkey", "type":"string"},
-                       |    "col1":{"cf":"cf", "col":"col1", "type":"String"}}}',
+                       |    "id":{"cf":"rowkey", "col":"rowkey", "type":"string"},
+                       |    "skuname":{"cf":"sku", "col":"skuname", "type":"string"},
+                       |    "skutype":{"cf":"sku", "col":"skutype", "type":"string"},
+                       |    "price":{"cf":"price", "col":"price", "type":"float"},
+                       |    "score":{"cf":"price", "col":"score", "type":"float"}}}',
                        |    'hbase.zookeeper.quorum' = '${zkAddress}'
                        |    )""".stripMargin
 
